@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html lang="en-AU">
+<head>
+  <title>Exercise Tracker</title>
+  <link rel="shortcut icon" href="https://cdn.freecodecamp.org/universal/favicons/favicon.ico" type="image/x-icon"/>
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css"/>
+
+  <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/style.css" rel="stylesheet" type="text/css">
+
+  <script href="/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+</head>
+
+<body>
+<h1 class="text-center fw-bold mt-4 mb-4">
+  <span class="text-multi-color">Exercise tracker</span>
+</h1>
+
+<hr/>
+
+<div class="container text-center mt-5">
+  <div class="row mb-3">
+    <div class="col-12 col-md-8 offset-md-2">
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <form action="/api/users" id="user-form" method="POST">
+            <h2 class="mb-3">Create a New User</h2>
+            <p class="mb-3"><code>POST /api/users</code></p>
+
+            <input id="uname" type="text" name="username" class="form-control" placeholder="username"/>
+
+            <input type="submit" class="btn btn-secondary w-100 mt-4" value="Submit"/>
+          </form>
+        </div>
+        <div class="col-12 col-md-6">
+          <form action="/api/users/:_id/exercises" id="exercise-form" method="POST">
+            <h2 class="mb-3">Add exercises</h2>
+            <p class="mb-3"><code>POST /api/users/:_id/exercises</code></p>
+
+            <input id="uid" type="text" name=":_id" class="form-control mb-2" placeholder=":_id"/>
+            <input id="desc" type="text" name="description" class="form-control mb-2" placeholder="description*"/>
+            <input id="dur" type="text" name="duration" class="form-control mb-2" placeholder="duration* (mins.)"/>
+            <input id="date" type="text" name="date" class="form-control mb-0" placeholder="date (yyyy-mm-dd)"/>
+
+            <input type="submit" class="btn btn-secondary w-100 mt-4" value="Submit"/>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="mb-3">
+    <strong>GET user's exercise logs: </strong>
+    <code>GET /api/users/:_id/logs?[from][&amp;to][&amp;limit]</code>
+  </p>
+  <p class="mb-3"><strong>[ ]</strong> = optional</p>
+  <p class="mb-3"><strong>from, to</strong> = dates (yyyy-mm-dd); <strong>limit</strong> = number</p>
+</div>
+
+<p class="text-center fw-bold mt-5 mb-0">
+  <span class="text-multi-color">Developed by </span>
+  Minh Ta
+</p>
+
+<script>
+  const exerciseForm = document.getElementById('exercise-form');
+
+  exerciseForm.addEventListener('submit', () => {
+    const userId = document.getElementById('uid').value;
+    exerciseForm.action = `/api/users/${userId}/exercises`;
+
+    exerciseForm.submit();
+  });
+</script>
+</body>
+</html>
