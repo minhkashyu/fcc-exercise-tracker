@@ -104,15 +104,6 @@ app.post('/api/users/:id/exercises', function(req, res) {
     return res.json({'error': 'The date is invalid.'});
   }
 
-  // The response returned from POST /api/users/:_id/exercises will be the
-  // user object with the exercise fields added.
-  // {
-  //   username: "fcc_test",
-  //   description: "test",
-  //   duration: 60,
-  //   date: "Mon Jan 01 1990",
-  //   _id: "5fb5853f734231456ccb3b05"
-  // }
   dbUsers.findUserById(userId, (err, user) => {
     if (err || !user) {
       return res.json({'error': 'The user is not found.'});
@@ -128,9 +119,21 @@ app.post('/api/users/:id/exercises', function(req, res) {
         return res.json({'error': err});
       }
 
-      doc.username = user.username;
+      let result = doc.toObject({ transform: true });
 
-      res.json(doc);
+      result._id = user._id;
+      result.username = user.username;
+
+      // The response returned from POST /api/users/:_id/exercises will be the
+      // user object with the exercise fields added.
+      // {
+      //   username: "fcc_test",
+      //   description: "test",
+      //   duration: 60,
+      //   date: "Mon Jan 01 1990",
+      //   _id: "5fb5853f734231456ccb3b05"
+      // }
+      res.json(result);
     });
   });
 });
@@ -176,30 +179,6 @@ app.get('/api/users/:id/logs', function(req, res) {
     dateTo = dateTo.toISOString().split('T')[0];
   }
 
-  // A request to a user's log GET /api/users/:_id/logs returns a user object
-  // with a count property representing the number of exercises that belong
-  // to that user.
-  // A GET request to /api/users/:_id/logs will return the user object with
-  // a log array of all the exercises added.
-  // Each item in the log array that is returned from GET /api/users/:_id/logs
-  // is an object that should have a description, duration, and date properties.
-  // The description property of any object in the log array that is returned
-  // from GET /api/users/:_id/logs should be a string.
-  // The duration property of any object in the log array that is returned
-  // from GET /api/users/:_id/logs should be a number.
-  // The date property of any object in the log array that is returned
-  // from GET /api/users/:_id/logs should be a string.
-  // Use the dateString format of the Date API.
-  // {
-  //   username: "fcc_test",
-  //   count: 1,
-  //   _id: "5fb5853f734231456ccb3b05",
-  //   log: [{
-  //   description: "test",
-  //   duration: 60,
-  //   date: "Mon Jan 01 1990",
-  // }]
-  // }
   dbUsers.findUserById(userId, (err, user) => {
     if (err) {
       return res.json({'error': err});
@@ -236,6 +215,30 @@ app.get('/api/users/:id/logs', function(req, res) {
         return res.json({'error': criteria});
       }
 
+      // A request to a user's log GET /api/users/:_id/logs returns a user object
+      // with a count property representing the number of exercises that belong
+      // to that user.
+      // A GET request to /api/users/:_id/logs will return the user object with
+      // a log array of all the exercises added.
+      // Each item in the log array that is returned from GET /api/users/:_id/logs
+      // is an object that should have a description, duration, and date properties.
+      // The description property of any object in the log array that is returned
+      // from GET /api/users/:_id/logs should be a string.
+      // The duration property of any object in the log array that is returned
+      // from GET /api/users/:_id/logs should be a number.
+      // The date property of any object in the log array that is returned
+      // from GET /api/users/:_id/logs should be a string.
+      // Use the dateString format of the Date API.
+      // {
+      //   username: "fcc_test",
+      //   count: 1,
+      //   _id: "5fb5853f734231456ccb3b05",
+      //   log: [{
+      //   description: "test",
+      //   duration: 60,
+      //   date: "Mon Jan 01 1990",
+      // }]
+      // }
       res.json({
         _id: user._id,
         username: user.username,

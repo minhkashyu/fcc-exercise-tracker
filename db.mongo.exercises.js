@@ -28,7 +28,15 @@ const ExerciseSchema = new mongoose.Schema({
       delete ret.user;
     },
   },
-  toObject: {virtuals: true},
+  toObject: {
+    virtuals: true,
+    transform: function(doc, ret) {
+      ret.date = ret.date.toDateString();
+      delete ret.id;
+      delete ret.__v;
+      delete ret.user;
+    },
+  },
 });
 
 let ExerciseModel = mongoose.model('Exercise', ExerciseSchema);

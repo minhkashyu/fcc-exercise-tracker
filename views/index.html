@@ -29,9 +29,11 @@
             <h2 class="mb-3">Create a New User</h2>
             <p class="mb-3"><code>POST /api/users</code></p>
 
-            <input id="uname" type="text" name="username" class="form-control" placeholder="username"/>
+            <input id="uname" type="text" name="username" class="form-control mb-4" placeholder="username"/>
 
-            <input type="submit" class="btn btn-secondary w-100 mt-4" value="Submit"/>
+            <div class="json-response alert alert-info text-break mb-2" style="display: none;"></div>
+
+            <input type="submit" class="btn btn-secondary w-100" value="Submit"/>
           </form>
         </div>
         <div class="col-12 col-md-6">
@@ -42,9 +44,11 @@
             <input id="uid" type="text" name=":_id" class="form-control mb-2" placeholder=":_id"/>
             <input id="desc" type="text" name="description" class="form-control mb-2" placeholder="description*"/>
             <input id="dur" type="text" name="duration" class="form-control mb-2" placeholder="duration* (mins.)"/>
-            <input id="date" type="text" name="date" class="form-control mb-0" placeholder="date (yyyy-mm-dd)"/>
+            <input id="date" type="text" name="date" class="form-control mb-4" placeholder="date (yyyy-mm-dd)"/>
 
-            <input type="submit" class="btn btn-secondary w-100 mt-4" value="Submit"/>
+            <div class="json-response alert alert-info text-break mb-2" style="display: none;"></div>
+
+            <input type="submit" class="btn btn-secondary w-100" value="Submit"/>
           </form>
         </div>
       </div>
@@ -65,13 +69,58 @@
 </p>
 
 <script>
+  const ajaxPost = (frm, data) => {
+    // disable submit button
+    frm.querySelector('input[type="submit"]').disabled = true;
+
+    // ajax
+    const xhr = new XMLHttpRequest();
+
+    xhr.open('POST', frm.action);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send(data);
+
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        // enable submit button
+        frm.querySelector('input[type="submit"]').disabled = false;
+        frm.querySelector('.json-response').innerHTML = xhr.responseText;
+        frm.querySelector('.json-response').style.display = 'block';
+      }
+    };
+  };
+
+  /**
+   * User Form
+   */
+  const userForm = document.getElementById('user-form');
+
+  userForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    ajaxPost(userForm, `username=${userForm.querySelector('#uname').value}`);
+
+    return false;
+  });
+
+  /**
+   * Exercise Form
+   */
   const exerciseForm = document.getElementById('exercise-form');
 
-  exerciseForm.addEventListener('submit', () => {
+  exerciseForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
     const userId = document.getElementById('uid').value;
     exerciseForm.action = `/api/users/${userId}/exercises`;
 
-    exerciseForm.submit();
+    ajaxPost(
+      exerciseForm,
+      `_id=${userId}&description=${exerciseForm.querySelector('#desc').value}&duration=${exerciseForm.querySelector(
+        '#dur').value}&date=${exerciseForm.querySelector('#date').value}`
+    );
+
+    return false;
   });
 </script>
 </body>
